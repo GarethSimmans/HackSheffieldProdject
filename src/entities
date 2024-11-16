@@ -1,0 +1,12 @@
+typedef enum {
+	red;
+	blue;
+} Colour;
+
+typedef struct {
+	int x;
+	int y;
+	Colour colour;
+} Location;
+
+
