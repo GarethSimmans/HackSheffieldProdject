@@ -1,0 +1,17 @@
+.{
+    .name = "firmware",
+    .version = "0.0.0",
+    .dependencies = .{
+        .@"microzig/build" = .{
+            .path = "microzig/build",
+        },
+        .@"microzig/port/raspberrypi/rp2xxx" = .{
+            .path = "microzig/port/raspberrypi/rp2xxx",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
