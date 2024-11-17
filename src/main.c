@@ -14,6 +14,7 @@ typedef struct {
     Texture2D red; 
     Texture2D blue;
     Texture2D empty;
+    Sound song;
 } Assets;
 
 Assets assets = {0};
@@ -34,6 +35,8 @@ static void load_assets(void) {
     assets.red = red;
     assets.blue = blue;
     assets.empty = empty;
+    assets.song = LoadSound("song.wav");
+    PlaySound(assets.song);
 }
 
 static void handle_event(void) {
@@ -41,35 +44,46 @@ static void handle_event(void) {
     switch (event) {
     case KEY_J:
         printf("key_pressed: %c\n", event);
+        bool collided = false;
         for (int i = state.idx; i < 2048; i++){
             if (CheckCollisionCircles(
                 (Vector2){.x = 250, .y = 570},
-                80,
+                50,
                 (Vector2){.x = state.entities[i].x, .y = state.entities[i].y},
                 64
             ) && state.entities[i].colour == TRED ) {
-                 state.idx = i + 1;
+                state.idx = i + 1;
+                collided = true;
             }
+        }
+        if (!collided) {
+            state.score -= 1;
         }
         break;
     case KEY_K:
         printf("key_pressed: %c\n", event);
+        collided = false;
         for (int i = state.idx; i < 2048; i++){
             if (CheckCollisionCircles(
                 (Vector2){.x = 250, .y = 570},
-                80,
+                50,
                 (Vector2){.x = state.entities[i].x, .y = state.entities[i].y},
                 64
             ) && state.entities[i].colour == TBLUE ) {
-                 state.idx = i + 1;
+                state.idx = i + 1;
+                collided = true;
             }
+        }
+        if (!collided) {
+            state.score -= 1;
         }
         break;
     }
 }
 
 static void init(void) {
-    SetTargetFPS(60);
+    InitAudioDevice();
+    SetTargetFPS(144);
     state.score = 100;
 
     if (!IsWindowFullscreen()) {
@@ -81,15 +95,16 @@ static void init(void) {
 
     InitWindow(width,height,"taiko");
 
-    // load entities to represent song
-    int x_start = 1750;
-
-    for (int i = 0; i < 2048; i+= 2){
-        x_start += 240;
-        state.entities[i] =  (Location){.x = x_start, .y = 500, .colour = 0};
-        state.entities[i+1] = (Location){.x = x_start + 120, .y = 500, .colour = 1};
-    }
-
+#include "output.h"
+    // // load entities to represent song
+    // int x_start = 1750;
+    //
+    // for (int i = 0; i < 2048; i+= 2){
+    //     x_start += 240;
+    //     state.entities[i] =  (Location){.x = x_start, .y = 500, .colour = 1};
+    //     state.entities[i+1] = (Location){.x = x_start + 120, .y = 500, .colour = 2};
+    // }
+    //
 }
 
 static void destroy(void) {
@@ -99,7 +114,7 @@ static void destroy(void) {
 static void update(void) {
     for (int i = state.idx; i < 2048; i += 1) {
         if (state.entities[i].x > 0) {
-            state.entities[i].x -= 10;
+            state.entities[i].x -= 5;
         } else if (state.entities[i].x <= 0 && state.entities[i].colour != EMPTY) {
             state.idx = i + 1;
             state.score -= 1;
