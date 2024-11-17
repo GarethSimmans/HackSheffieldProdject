@@ -2,20 +2,14 @@
 #include <stdlib.h>
 
 typedef enum {
-	empty,
-	red,
-	blue,
+	EMPTY,
+	TRED,
+	TBLUE,
 } Colour;
 
 typedef struct {
 	int x;
 	int y;
 	Colour colour;
-	int checked;
 } Location;
-
-
-
-
-
 
