@@ -11,7 +11,6 @@ typedef struct {
 State state = {0};
 
 static void handle_event(void) {
-    int check = 0;
     const int event = GetKeyPressed();
     switch (event) {
     case KEY_J:
@@ -23,14 +22,9 @@ static void handle_event(void) {
                 (Vector2){.x = state.entities[count].x, .y = state.entities[count].y},
                 64
             ) && state.entities[count].colour == 1 ) {
-                state.score++;
-                check = 1;
+                state.entities[count].checked = 1;
             }
         }
-        if (!check){
-            state.score--;
-        }
-
         break;
     case KEY_K:
         printf("key_pressed: %c\n", event);
@@ -41,13 +35,8 @@ static void handle_event(void) {
                     (Vector2){.x = state.entities[count].x, .y = state.entities[count].y},
                     64
                 ) && state.entities[count].colour == 2 ) {
-                state.score++;
-                check = 1;
+                state.entities[count].checked = 1;
             }
-        }
-
-        if (!check){
-            state.score--;
         }
         break;
     default:
@@ -56,6 +45,7 @@ static void handle_event(void) {
 
 int main(int argc, char *argv[]) {
     SetTargetFPS(60);
+    state.score = 100;
 
     if (!IsWindowFullscreen()) {
         ToggleFullscreen();
@@ -82,14 +72,19 @@ int main(int argc, char *argv[]) {
     int x_start = 1750;
 
     for (int i = 0; i < 2048; i+= 2){
-        x_start += 500;
-        state.entities[i] =  (Location){.x = x_start, .y = 500, .colour = 1};
-        state.entities[i+1] =  (Location){.x = x_start + 250, .y = 500, .colour = 2};
+        x_start += 240;
+        state.entities[i] =  (Location){.x = x_start, .y = 500, .colour = 0, .checked = 0};
+        state.entities[i+1] = (Location){.x = x_start + 120, .y = 500, .colour = 1, .checked = 0};
 
     }
 
     char text_buffer[8] = {0};
     while(!WindowShouldClose()){
+        if (state.score == 0){
+            float time = GetTime();
+            printf("Time Lasted: %f\n", time);
+            break;
+        }
         BeginDrawing();
         handle_event();
         ClearBackground(BLACK);
@@ -117,6 +112,10 @@ int main(int argc, char *argv[]) {
                 );
                 state.entities[count].x -= 10;
             }
+            else if (state.entities[count].x == 0 && state.entities[count].checked == 0 && state.entities[count].colour != 0){
+                state.score--;
+                state.entities[count].x--;
+            } 
         }
         EndDrawing();
     }
