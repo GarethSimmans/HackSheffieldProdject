@@ -74,14 +74,17 @@ int main(int argc, char *argv[]) {
 	ImageResize(&emptyImage, 128, 128);
 	Texture2D empty = LoadTextureFromImage(emptyImage);
 	
-
+	// load entities to represent song 
 	int x_start = 1750;
 
-	for (int i = 0; i < 2048; i++){
-		x_start += 1000;
-		state.entities[i] =  (Location){.x = x_start, .y = 500, .colour = 2};
-	}
+	for (int i = 0; i < 2048; i+= 2){
+		x_start += 500;
+		state.entities[i] =  (Location){.x = x_start, .y = 500, .colour = 1};
+		state.entities[i+1] =  (Location){.x = x_start + 250, .y = 500, .colour = 2};
 
+	}
+		
+	//
 	
 	char text_buffer[8] = {0};
 	while(!WindowShouldClose()){
